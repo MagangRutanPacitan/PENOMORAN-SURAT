@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penomoran Surat &mdash; Kode Klasifikasi Arsip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-950:#0f2438;
+    --navy-900:#14304d;
+    --navy-800:#1c4064;
+    --navy-100:#e7edf3;
+    --amber-600:#b0741f;
+    --amber-500:#c9822c;
+    --amber-100:#f5e6cd;
+    --paper:#f3f5f7;
+    --card:#ffffff;
+    --ink:#1f2933;
+    --ink-soft:#5b6b7a;
+    --line:#dde3e9;
+    --good:#1f7a4d;
+    --good-bg:#e6f4ec;
+    --danger:#b3382c;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans',system-ui,-apple-system,sans-serif;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--navy-800);}
+
+  .topbar{
+    background:linear-gradient(180deg,var(--navy-950) 0%,var(--navy-900) 100%);
+    color:#fff;
+    padding:28px 24px 26px;
+    border-bottom:3px solid var(--amber-500);
+  }
+  .topbar-inner{max-width:880px;margin:0 auto;}
+  .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    letter-spacing:.04em;
+    color:var(--amber-100);
+    opacity:.85;
+    margin:0 0 8px;
+  }
+  h1{
+    font-family:'Source Serif 4',Georgia,serif;
+    font-weight:600;
+    font-size:28px;
+    margin:0 0 6px;
+    letter-spacing:-.01em;
+  }
+  .topbar p.sub{
+    margin:0;
+    font-size:14.5px;
+    color:#c7d4e0;
+    max-width:60ch;
+  }
+
+  .wrap{max-width:880px;margin:0 auto;padding:28px 24px 80px;}
+
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:26px 26px 24px;
+    margin-bottom:22px;
+  }
+  .card h2{
+    font-family:'Source Serif 4',Georgia,serif;
+    font-size:19px;
+    font-weight:600;
+    margin:0 0 4px;
+    color:var(--navy-950);
+  }
+  .card .desc{
+    font-size:13.5px;
+    color:var(--ink-soft);
+    margin:0 0 20px;
+  }
+
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;
+    font-size:13px;
+    font-weight:600;
+    color:var(--navy-900);
+    margin-bottom:6px;
+  }
+  .field .hint{
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:5px;
+  }
+  input[type=text], select, textarea{
+    width:100%;
+    padding:10px 12px;
+    border:1.5px solid var(--line);
+    border-radius:7px;
+    font-size:14.5px;
+    font-family:inherit;
+    color:var(--ink);
+    background:#fff;
+    transition:border-color .15s;
+  }
+  input[type=text]:focus, select:focus, textarea:focus{
+    outline:none;
+    border-color:var(--navy-800);
+    box-shadow:0 0 0 3px var(--navy-100);
+  }
+  select:disabled, input:disabled{
+    background:#f3f4f6;
+    color:#9aa5b1;
+    cursor:not-allowed;
+  }
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  @media (max-width:600px){.row2{grid-template-columns:1fr;}}
+
+  .prefix-input-group{display:flex; gap:8px; align-items:stretch;}
+  .prefix-input-group input{flex:1;}
+  .btn-small{
+    padding:0 14px;
+    border-radius:7px;
+    border:1.5px solid var(--line);
+    background:#fff;
+    color:var(--navy-900);
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .btn-small:hover{border-color:var(--navy-800);}
+
+  .preview-box{
+    background:var(--navy-950);
+    border-radius:9px;
+    padding:20px 22px;
+    margin:22px 0 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+  }
+  .preview-label{
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.07em;
+    color:#9db2c6;
+    margin:0 0 6px;
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .preview-number{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:21px;
+    font-weight:600;
+    color:#fff;
+    letter-spacing:.01em;
+    word-break:break-all;
+    user-select:none;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    cursor:default;
+  }
+  .preview-number .num-part{color:var(--amber-500);}
+  .preview-empty{color:#8697a6;font-size:14px;font-family:'IBM Plex Sans',sans-serif;}
+  .preview-date{font-size:12.5px;color:#9db2c6;margin:6px 0 0;font-family:'IBM Plex Sans',sans-serif;}
+  .pending-note{font-size:12.5px;color:var(--amber-500);margin-top:8px;font-family:'IBM Plex Sans',sans-serif;}
+
+  .btn-primary{
+    background:var(--amber-500);
+    color:#231607;
+    border:none;
+    padding:12px 22px;
+    border-radius:7px;
+    font-size:14.5px;
+    font-weight:700;
+    cursor:pointer;
+    transition:background .15s, transform .1s;
+    white-space:nowrap;
+  }
+  .btn-primary:hover{background:var(--amber-600);}
+  .btn-primary:active{transform:scale(.98);}
+  .btn-primary:disabled{background:#c7cdd3;color:#8a929a;cursor:not-allowed;}
+
+  .btn-ghost{
+    background:transparent;
+    border:1.5px solid var(--line);
+    color:var(--ink-soft);
+    padding:8px 14px;
+    border-radius:7px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .btn-ghost:hover{border-color:var(--navy-800); color:var(--navy-900);}
+
+  .toast{
+    display:none;
+    align-items:center;
+    gap:10px;
+    background:var(--good-bg);
+    color:var(--good);
+    border:1px solid #b9e2c9;
+    padding:11px 14px;
+    border-radius:7px;
+    font-size:13.5px;
+    font-weight:600;
+    margin-top:14px;
+  }
+  .toast.show{display:flex;}
+
+  table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  thead th{
+    text-align:left;
+    font-size:11.5px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--ink-soft);
+    font-weight:600;
+    padding:8px 10px;
+    border-bottom:2px solid var(--line);
+  }
+  tbody td{
+    padding:10px 10px;
+    border-bottom:1px solid var(--line);
+    vertical-align:top;
+  }
+  tbody tr:hover{background:#fafbfc;}
+  td.num{font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--navy-900); white-space:nowrap;}
+  td.date{white-space:nowrap; color:var(--ink-soft); font-size:12.5px;}
+  .row-actions{display:flex; gap:6px;}
+  .icon-btn{
+    background:none; border:none; cursor:pointer; color:#9aa5b1; font-size:15px; padding:2px 4px; border-radius:5px;
+  }
+  .icon-btn:hover{color:var(--danger); background:#fdeceb;}
+
+  .toolbar{display:flex; gap:10px; align-items:center; margin-bottom:14px; flex-wrap:wrap;}
+  .toolbar input[type=text]{max-width:260px;}
+  .empty-state{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+
+  .settings-toggle{
+    background:none;border:none; color:var(--ink-soft); font-size:12.5px; cursor:pointer;
+    text-decoration:underline; text-underline-offset:2px; padding:0;
+  }
+  .settings-panel{
+    margin-top:16px; padding-top:16px; border-top:1px dashed var(--line);
+    display:none;
+  }
+  .settings-panel.show{display:block;}
+  .footnote{
+    font-size:12px; color:var(--ink-soft); margin-top:22px; text-align:center; line-height:1.6;
+  }
+  .badge{
+    display:inline-block; font-size:11px; font-weight:600; padding:2px 8px; border-radius:20px;
+    background:var(--navy-100); color:var(--navy-800); margin-left:6px;
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <p class="eyebrow">SISTEM PENOMORAN &middot; KODE KLASIFIKASI ARSIP</p>
+    <h1>Penomoran Surat</h1>
+    <p class="sub">Nomor dibentuk otomatis dari kode klasifikasi pada Lampiran I Permen Imipas Nomor 8 Tahun 2026. Setiap kombinasi kode klasifikasi punya nomor urutnya sendiri, dimulai dari 1.</p>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <div class="card">
+    <h2>Buat nomor surat</h2>
+    <p class="desc">Pilih kategori arsip, lalu ambil nomor urut berikutnya.</p>
+
+    <div class="field">
+      <label>Kode unit / wilayah <span class="badge">Terkunci</span></label>
+      <input type="text" id="prefixInput" value="WP.15.PAS.32" readonly style="background:#f3f4f6;color:#5b6b7a;cursor:not-allowed;">
+      <p class="hint">Kode unit sudah ditetapkan tetap untuk semua surat dan tidak bisa diubah dari sini.</p>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label for="groupSelect">Kategori</label>
+        <select id="groupSelect"></select>
+      </div>
+      <div class="field">
+        <label for="subSelect">Sub kategori</label>
+        <select id="subSelect" disabled></select>
+      </div>
+    </div>
+
+    <div class="field" id="itemField">
+      <label for="itemSelect">Rincian jenis arsip</label>
+      <select id="itemSelect" disabled></select>
+    </div>
+
+    <div class="row2">
+      <div class="field">
+        <label for="perihalInput">Perihal surat <span style="font-weight:400;color:var(--ink-soft);">(opsional, untuk catatan riwayat)</span></label>
+        <input type="text" id="perihalInput" placeholder="contoh: Undangan rapat koordinasi triwulan">
+      </div>
+      <div class="field">
+        <label for="tanggalInput">Tanggal surat</label>
+        <input type="date" id="tanggalInput">
+        <p class="hint">Default hari ini, bisa diubah bila surat mundur/maju tanggal.</p>
+      </div>
+    </div>
+
+    <div class="preview-box">
+      <div>
+        <p class="preview-label">Nomor berikutnya</p>
+        <div class="preview-number" id="previewNumber"><span class="preview-empty">Lengkapi kategori di atas&hellip;</span></div>
+        <p class="preview-date" id="previewDate"></p>
+      </div>
+      <button class="btn-primary" id="takeNumberBtn" disabled>Ambil nomor ini</button>
+    </div>
+
+    <div class="toast" id="successToast">
+      <span>&#10003;</span>
+      <span id="toastText"></span>
+    </div>
+
+    <button class="settings-toggle" id="settingsToggle">Atur ulang nomor urut untuk kode ini</button>
+    <div class="settings-panel" id="settingsPanel">
+      <div class="field" style="max-width:260px;">
+        <label for="manualCounter">Nomor urut terakhir yang dipakai untuk kode terpilih</label>
+        <div class="prefix-input-group">
+          <input type="text" id="manualCounter" placeholder="0">
+          <button class="btn-small" id="saveCounterBtn">Simpan</button>
+        </div>
+        <p class="hint">Nomor berikutnya akan menjadi nilai ini + 1. Gunakan hanya untuk mengoreksi jika nomor urut tidak sesuai.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Isi Nomor &amp; Tanggal ke PDF</h2>
+    <p class="desc">Upload surat (PDF) yang bagian nomor/tanggalnya masih kosong. Cara termudah: di template Word/surat Anda, ketik kode <code style="background:#f0f0f0; padding:1px 5px; border-radius:4px; font-family:'IBM Plex Mono',monospace;">{{NOMOR}}</code> di tempat nomor surat berada (dan <code style="background:#f0f0f0; padding:1px 5px; border-radius:4px; font-family:'IBM Plex Mono',monospace;">{{TANGGAL}}</code> di tempat tanggal, jika perlu), lalu ekspor/simpan sebagai PDF. Saat PDF diupload di sini, kode itu akan terdeteksi otomatis dan langsung diganti dengan nomor & tanggal sebenarnya. Jika dokumen tidak memakai kode ini, Anda tetap bisa menandai posisinya secara manual dengan klik.</p>
+
+    <div class="field">
+      <label>Kategori yang akan dipakai</label>
+      <div id="pdfClassPreview" style="font-size:13.5px; color:var(--ink-soft); padding:10px 12px; background:#f7f8f9; border-radius:7px; border:1px solid var(--line);">Lengkapi kategori pada bagian di atas terlebih dahulu.</div>
+    </div>
+
+    <div class="field">
+      <label for="pdfFileInput">Berkas PDF surat</label>
+      <input type="file" id="pdfFileInput" accept="application/pdf">
+      <p class="hint">Berkas hanya diproses di peramban Anda (tidak diunggah ke server mana pun). Hanya halaman pertama yang diisi.</p>
+    </div>
+
+    <div id="pdfPreviewWrap" style="display:none;">
+      <div class="row2">
+        <div class="field">
+          <label>Tandai posisi pada surat</label>
+          <div style="display:flex; gap:8px; flex-wrap:wrap;">
+            <button type="button" class="btn-small" id="placeNumberBtn">&#128205; Tandai posisi Nomor</button>
+            <button type="button" class="btn-small" id="placeDateBtn">&#128205; Tandai posisi Tanggal</button>
+          </div>
+          <p class="hint" id="placeStatus">Klik salah satu tombol, lalu klik lokasi yang sesuai pada pratinjau surat di bawah.</p>
+          <p class="pending-note" id="pendingNote" style="display:none;"></p>
+        </div>
+        <div class="field">
+          <label for="pdfFontSize">Ukuran huruf (pt)</label>
+          <input type="text" id="pdfFontSize" value="11" style="max-width:100px;">
+        </div>
+      </div>
+
+      <div style="position:relative; display:inline-block; border:1px solid var(--line); border-radius:8px; overflow:auto; max-width:100%;">
+        <canvas id="pdfCanvas" style="display:block; max-width:100%; height:auto; cursor:crosshair;"></canvas>
+        <div id="pdfMarkerNumber" style="position:absolute; display:none; pointer-events:none; background:var(--amber-500); color:#231607; font-size:11px; font-weight:700; padding:2px 6px; border-radius:4px; transform:translate(-2px,-100%); white-space:nowrap;">NOMOR</div>
+        <div id="pdfMarkerDate" style="position:absolute; display:none; pointer-events:none; background:var(--navy-800); color:#fff; font-size:11px; font-weight:700; padding:2px 6px; border-radius:4px; transform:translate(-2px,-100%); white-space:nowrap;">TANGGAL</div>
+      </div>
+
+      <div style="margin-top:16px;">
+        <button class="btn-primary" id="pdfTakeNumberBtn" disabled>Ambil Nomor &amp; Unduh PDF Terisi</button>
+      </div>
+      <div class="toast" id="pdfToast">
+        <span>&#10003;</span>
+        <span id="pdfToastText"></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Riwayat nomor surat<span class="badge" id="historyCount">0</span></h2>
+    <p class="desc">Semua nomor yang sudah diambil, tersimpan dan dibagikan untuk seluruh pengguna alat ini.</p>
+
+    <div class="toolbar">
+      <input type="text" id="searchInput" placeholder="Cari nomor atau perihal&hellip;">
+      <button class="btn-ghost" id="exportBtn">Unduh CSV</button>
+      <button class="btn-ghost" id="refreshBtn">Muat ulang</button>
+    </div>
+
+    <div id="historyTableWrap">
+      <div class="empty-state">Memuat riwayat&hellip;</div>
+    </div>
+  </div>
+
+  <p class="footnote">
+    Kode klasifikasi bersumber dari Lampiran I Peraturan Menteri Imigrasi dan Pemasyarakatan Nomor 8 Tahun 2026.<br>
+    Data nomor surat dan kode unit pada alat ini tersimpan bersama (shared) &mdash; siapa pun yang membuka alat ini dapat melihat riwayatnya.<br>
+    Fitur pengisian PDF memproses berkas sepenuhnya di peramban (browser) Anda; berkas PDF tidak diunggah ke server mana pun.
+  </p>
+  <p class="footnote" id="storageModeNote" style="display:none; color:var(--danger);"></p>
+
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script>
+const CLASSIFICATION = [{"letter": "A", "code": "PR", "name": "PERENCANAAN", "section": "Fasilitatif", "subs": [{"code": "PR 01", "name": "Kebijakan dan Strategis Pembangunan", "items": [{"code": "01.01", "name": "Rencana pembangunan jangka panjang"}, {"code": "01.02", "name": "Rencana pembangunan jangka menengah"}, {"code": "01.03", "name": "Rencana strategis kementerian"}, {"code": "01.04", "name": "Rencana strategis satuan kerja"}, {"code": "01.05", "name": "Pertemuan Tiga Pihak (Trilateral Meeting)"}, {"code": "01.06", "name": "Rencana kerja"}, {"code": "01.07", "name": "Rencana kerja dan anggaran"}]}, {"code": "PR 02", "name": "Evaluasi Program", "items": [{"code": "02.01", "name": "Evaluasi dan Kinerja Kementerian"}, {"code": "02.02", "name": "Evaluasi dan Kinerja Satuan Kerja"}]}, {"code": "PR 03", "name": "Laporan Akuntabilitas Kinerja Instansi Pemerintah", "items": []}, {"code": "PR 04", "name": "Pelaporan", "items": [{"code": "04.01", "name": "Laporan Tetap Periodik"}, {"code": "04.02", "name": "Laporan Tahunan"}, {"code": "04.03", "name": "Laporan Insidentil"}]}, {"code": "PR 05", "name": "Rapat Kerja", "items": [{"code": "05.01", "name": "Rapat Kerja dengan Dewan Perwakilan Rakyat"}, {"code": "05.02", "name": "Rapat Kerja Tingkat Kementerian"}, {"code": "05.03", "name": "Rapat Kerja Unit Utama atau Rapat Kerja Teknis"}, {"code": "05.04", "name": "Rapat Kerja Tingkat Kantor Wilayah"}, {"code": "05.05", "name": "Rapat Pimpinan"}, {"code": "05.06", "name": "Rapat staf"}]}, {"code": "PR 06", "name": "Sidang Kabinet", "items": [{"code": "06.01", "name": "Sidang kabinet terbatas"}, {"code": "06.02", "name": "Sidang Kabinet Paripurna"}]}, {"code": "PR 07", "name": "Penetapan kinerja", "items": [{"code": "07.01", "name": "Perjanjian Kinerja Jabatan Pimpinan Tinggi Utama dan Madya"}, {"code": "07.02", "name": "Perjanjian Kinerja Jabatan Pimpinan Tinggi Pratama ke Bawah"}]}]}, {"letter": "B", "code": "KU", "name": "KEUANGAN", "section": "Fasilitatif", "subs": [{"code": "KU 01", "name": "Pelaksanaan Anggaran", "items": [{"code": "01.01", "name": "Pedoman, Petunjuk, dan Administrasi Pelaksanaan Anggaran"}, {"code": "01.02", "name": "Daftar Isian Pelaksanaan Anggaran"}, {"code": "01.03", "name": "Penerimaan Negara Bukan Pajak"}]}, {"code": "KU 02", "name": "Tata Usaha Keuangan", "items": [{"code": "02.01", "name": "Pedoman dan Petunjuk Administrasi Keuangan"}, {"code": "02.02", "name": "Penatausahaan Hibah"}, {"code": "02.03", "name": "Pejabat Perbendaharaan Negara"}, {"code": "02.04", "name": "Penyelesaian Kerugian Negara"}, {"code": "02.05", "name": "Penatausahaan Rekening Pemerintah"}]}, {"code": "KU 03", "name": "Perbendaharaan", "items": [{"code": "03.01", "name": "Pertanggungjawaban Belanja"}, {"code": "03.02", "name": "Buku Kas Umum dan Buku Pembantu"}, {"code": "03.03", "name": "Laporan Pertanggungjawaban Bendahara Pengeluaran"}, {"code": "03.04", "name": "Laporan Pertanggungjawaban Bendahara Penerimaan"}, {"code": "03.05", "name": "Penerimaan Negara Pajak"}]}, {"code": "KU 04", "name": "Akuntansi dan Pelaporan", "items": [{"code": "04.01", "name": "Laporan Keuangan"}, {"code": "04.02", "name": "Rekonsiliasi dan Data Laporan Keuangan"}, {"code": "04.03", "name": "Penyelesaian Tindak Lanjut Temuan Hasil Pemeriksaan Badan Pemeriksa Keuangan Republik"}]}]}, {"letter": "C", "code": "OT", "name": "ORGANISASI DAN TATA LAKSANA", "section": "Fasilitatif", "subs": [{"code": "OT 01", "name": "Organisasi dan Tata Kerja", "items": [{"code": "01.01", "name": "Organisasi dan Tata Kerja Kementerian"}, {"code": "01.02", "name": "Organisasi dan Tata Kerja Kantor Wilayah"}, {"code": "01.03", "name": "Organisasi dan Tata Kerja Unit Pelaksana Teknis"}, {"code": "01.04", "name": "Evaluasi Kelembagaan"}]}, {"code": "OT 02", "name": "Ketatalaksanaan", "items": [{"code": "02.01", "name": "Standarisasi Sarana Kerja"}, {"code": "02.02", "name": "Sistem, Prosedur, dan Metode Kerja"}, {"code": "02.03", "name": "Analisa dan Uraian Jabatan"}]}, {"code": "OT 03", "name": "Reformasi Birokrasi", "items": [{"code": "03.01", "name": "Penilaian Mandiri Pelaksanaan Reformasi Birokrasi"}, {"code": "03.02", "name": "Zona Integritas"}, {"code": "03.03", "name": "Evaluasi Reformasi Birokrasi"}]}, {"code": "OT 04", "name": "Instruksi Menteri", "items": []}]}, {"letter": "D", "code": "SA", "name": "SUMBER DAYA MANUSIA APARATUR", "section": "Fasilitatif", "subs": [{"code": "SA 01", "name": "Formasi Sumber Daya Manusia Aparatur", "items": [{"code": "01.01", "name": "Inventarisasi Jabatan/Peta Jabatan"}, {"code": "01.02", "name": "Evaluasi Jabatan"}, {"code": "01.03", "name": "Usulan Formasi"}, {"code": "01.04", "name": "Alokasi Formasi"}]}, {"code": "SA 02", "name": "Penerimaan/Pengadaan Sumber Daya Manusia Aparatur", "items": [{"code": "02.01", "name": "Proses Penerimaan Sumber Daya Manusia Aparatur"}, {"code": "02.02", "name": "Berkas Lamaran yang Tidak Diterima"}, {"code": "02.03", "name": "Surat Keputusan Calon Aparatur Sipil Negara/Aparatur Sipil Negara Kolektif"}, {"code": "02.04", "name": "Penerimaan Sumber Daya Manusia Aparatur Dari Sekolah Kedinasan Imigrasi dan Pemasyarakatan"}, {"code": "02.05", "name": "Ujian Dinas dan Ujian Penyesuaian Ijazah"}]}, {"code": "SA 03", "name": "Pengangkatan Sumber Daya Manusia Aparatur", "items": [{"code": "03.01", "name": "Pengangkatan Calon Aparatur Sipil Negara"}, {"code": "03.02", "name": "Pengangkatan Aparatur Sipil Negara"}, {"code": "03.03", "name": "Pengangkatan Jabatan Struktural"}, {"code": "03.04", "name": "Pengangkatan Jabatan Fungsional"}]}, {"code": "SA 04", "name": "Mutasi Sumber Daya Manusia Aparatur", "items": [{"code": "04.01", "name": "Alih Tugas/Diperbantukan/Dipekerjakan/ Pelaksana"}, {"code": "04.02", "name": "Pelaksana Harian/Pelaksana Tugas"}, {"code": "04.03", "name": "Pencantuman Gelar Akademik"}, {"code": "04.04", "name": "Kenaikan Gaji Berkala"}, {"code": "04.05", "name": "Kenaikan Pangkat/Golongan"}, {"code": "04.06", "name": "Peninjauan Masa Kerja"}, {"code": "04.07", "name": "Tim Penilai Kinerja"}, {"code": "04.08", "name": "Pengaktifan Kembali dari Cuti di Luar Tanggungan Negara dan Pengaktifan Setelah Pemberhentian"}]}, {"code": "SA 05", "name": "Pembinaan Sumber Daya Manusia Aparatur", "items": [{"code": "05.01", "name": "Penilaian Prestasi Kerja Pegawai"}, {"code": "05.02", "name": "Pembinaan Disiplin dan Kode Etik"}, {"code": "05.03", "name": "Pemberian Penghargaan dan Tanda Jasa"}]}, {"code": "SA 06", "name": "Pengembangan Sumber Daya Manusia Aparatur", "items": [{"code": "06.01", "name": "Pengembangan Kompetensi Jabatan Pimpinan Tinggi dan Administrasi"}, {"code": "06.02", "name": "Pengembangan Kompetensi Fungsional"}, {"code": "06.03", "name": "Pengiriman Peserta Diklat"}, {"code": "06.04", "name": "Beasiswa Pegawai"}]}, {"code": "SA 07", "name": "Hukuman Disiplin", "items": [{"code": "07.01", "name": "Tingkat Ringan"}, {"code": "07.02", "name": "Tingkat Sedang"}, {"code": "07.03", "name": "Tingkat Berat"}]}, {"code": "SA 08", "name": "Tata Usaha Sumber Daya Manusia Aparatur", "items": [{"code": "08.01", "name": "Data Sumber Daya Manusia Aparatur"}, {"code": "08.02", "name": "Identitas Pegawai"}, {"code": "08.03", "name": "Izin Kepegawaian"}, {"code": "08.04", "name": "Keanggotaan Sumber Daya Manusia Aparatur dalam Organisasi Sosial"}, {"code": "08.05", "name": "Daftar Hadir/Absensi Sumber Daya Manusia Aparatur"}]}, {"code": "SA 09", "name": "Kesejahteraan Sumber Daya Manusia Aparatur", "items": [{"code": "09.01", "name": "Kesehatan"}, {"code": "09.02", "name": "Tabungan Perumahan"}, {"code": "09.03", "name": "Tabungan dan Asuransi Pegawai Negeri"}, {"code": "09.04", "name": "Cuti"}, {"code": "09.05", "name": "Uang Duka Tewas"}, {"code": "09.06", "name": "Pembekalan Purnabakti"}, {"code": "09.07", "name": "Mutasi Keluarga"}, {"code": "09.08", "name": "Laporan Kekayaan"}]}, {"code": "SA 10", "name": "Pembinaan Jabatan Non Manajerial", "items": [{"code": "10.01", "name": "Jabatan Pelaksana"}, {"code": "10.02", "name": "Jabatan Fungsional"}]}, {"code": "SA 11", "name": "Pemberhentian Sumber Daya Manusia Aparatur", "items": [{"code": "11.01", "name": "Pemberhentian atas Permintaan Sendiri"}, {"code": "11.02", "name": "Pemberhentian karena Batas Usia pensiun"}, {"code": "11.03", "name": "Pemberhentian Karena Keuzuran/Kondisi Jasmani Dan Rohani/Meninggal Dunia (tewas)"}, {"code": "11.04", "name": "Pemberhentian karena Hilang"}, {"code": "11.05", "name": "Pemberhentian Sementara"}, {"code": "11.06", "name": "Pensiun Janda/Duda dan Anak"}]}, {"code": "SA 12", "name": "Berkas Perseorangan Pegawai Negeri Sipil", "items": []}, {"code": "SA 13", "name": "Berkas Perseorangan Pegawai Pemerintah Dengan Perjanjian Kerja", "items": []}, {"code": "SA 14", "name": "Berkas Perseorangan Menteri, Wakil Menteri Dan Pejabat Negara Lainnya", "items": []}, {"code": "SA 15", "name": "Berkas Perseorangan Pimpinan Tinggi Madya", "items": []}, {"code": "SA 16", "name": "Berkas Perseorangan Aparatur Sipil Negara yang Secara Individual Ditentukan oleh Menteri", "items": []}, {"code": "SA 17", "name": "Organisasi Non Kedinasan", "items": [{"code": "17.01", "name": "Korps Pegawai Republik Indonesia"}, {"code": "17.02", "name": "Dharma Wanita"}, {"code": "17.03", "name": "Koperasi"}]}]}, {"letter": "E", "code": "PB", "name": "PENGELOLAAN BARANG MILIK NEGARA", "section": "Fasilitatif", "subs": [{"code": "PB 01", "name": "Perencanaan Kebutuhan Barang Milik Negara", "items": [{"code": "01.01", "name": "Usulan Rencana Kebutuhan Barang Milik Negara"}, {"code": "01.02", "name": "Rencana Kebutuhan Barang Milik Negara Kementerian"}, {"code": "01.03", "name": "Hasil Analisis Kebutuhan Barang Milik Negara"}, {"code": "01.04", "name": "Rencana Kebutuhan Aset Berwujud"}, {"code": "01.05", "name": "Rencana Kebutuhan Aset Tak Berwujud"}]}, {"code": "PB 02", "name": "Pengadaan Barang Milik Negara", "items": [{"code": "02.01", "name": "Pengadaan Barang Persediaan (habis pakai)"}, {"code": "02.02", "name": "Pengadaan Barang bukan Persediaan"}, {"code": "02.03", "name": "Pengadaan Jasa Lainnya"}, {"code": "02.04", "name": "Pengadaan Jasa Konsultasi"}, {"code": "02.05", "name": "Pengadaan Teknis Aset Tetap (tanah)"}, {"code": "02.06", "name": "Pengadaan Aset Tidak Berwujud (perangkat lunak)"}, {"code": "02.07", "name": "Pengadaan Sewa"}, {"code": "02.08", "name": "Pengadaan Modal Peralatan dan Mesin"}, {"code": "02.09", "name": "Pekerjaan Konstruksi (bangunan)"}, {"code": "02.10", "name": "Pengelolaan Layanan Pengadaan secara Elektronik dan Data Informasi Pengadaan Barang/Jasa"}, {"code": "02.11", "name": "Pembinaan, Bimbingan, Pendampingan, Dan Konsultasi Teknis Pengadaan Barang/Jasa"}, {"code": "02.12", "name": "Tindak Lanjut Hasil Pemeriksaan"}, {"code": "02.13", "name": "Laporan Pengadaan Barang/Jasa"}, {"code": "02.14", "name": "Telaahan Permasalahan Pengadaan Barang/Jasa"}, {"code": "02.15", "name": "Unit Kerja Pengadaan Barang dan Jasa Sekretariat Unit Kerja Pengadaan Barang dan Jasa"}, {"code": "02.16", "name": "Pendistribusian Barang Milik Negara"}]}, {"code": "PB 03", "name": "Penetapan Status Dan Pengamanan Barang Milik Negara", "items": [{"code": "03.01", "name": "Penggunaan Barang Milik Negara"}, {"code": "03.02", "name": "Barang Milik Negara Bernilai Sejarah"}, {"code": "03.03", "name": "pemanfaatan barang milik negara"}, {"code": "03.04", "name": "Permasalahan Barang Milik Negara dan Berkas Pengamanan dan Pemeliharaan"}, {"code": "03.05", "name": "Rumah Negara"}]}, {"code": "PB 04", "name": "Penatausahaan Barang Milik Negara", "items": [{"code": "04.01", "name": "Pencatataan Barang Milik Negara"}, {"code": "04.02", "name": "Inventarisasi"}, {"code": "04.03", "name": "Opname Fisik"}, {"code": "04.04", "name": "Rekonsiliasi Data Barang Milik Negara"}, {"code": "04.05", "name": "Pengawasan dan Pengendalian Barang Milik Negara"}, {"code": "04.06", "name": "Laporan Barang Milik Negara"}]}, {"code": "PB 05", "name": "Pemindahtanganan dan Penghapusan", "items": [{"code": "05.01", "name": "Penjualan"}, {"code": "05.02", "name": "Tukar Menukar"}, {"code": "05.03", "name": "Hibah"}, {"code": "05.04", "name": "Pemusnahan dan Penghapusan Barang Milik Negara Tidak Bernilai Sejarah"}, {"code": "05.05", "name": "Pemusnahan dan Penghapusan Barang Milik Negara Bernilai Sejarah"}]}]}, {"letter": "F", "code": "KS", "name": "KERJA SAMA", "section": "Fasilitatif", "subs": [{"code": "KS 01", "name": "Penyusunan Rancangan Kerja Sama/Hubungan Lembaga dan Organisasi Kemasyarakatan", "items": [{"code": "01.01", "name": "Lembaga Tinggi Negara"}, {"code": "01.02", "name": "Lembaga Pemerintah"}, {"code": "01.03", "name": "Organisasi Kemasyarakatan/Lembaga Swasta"}, {"code": "01.04", "name": "Perguruan Tinggi/Sekolah"}]}, {"code": "KS 02", "name": "Nota Kesepahaman/Nota Kesepakatan/ Memorandum        Of    Understanding/Kontrak/", "items": []}, {"code": "KS 03", "name": "Permintaan dan Pengelolaan Data Kerja Sama", "items": []}, {"code": "KS 04", "name": "Audiensi/Kunjungan", "items": []}, {"code": "KS 05", "name": "Pemantauan dan Evaluasi", "items": []}, {"code": "KS 06", "name": "Administrasi Kerja Sama", "items": []}]}, {"letter": "G", "code": "HK", "name": "HUKUM", "section": "Fasilitatif", "subs": [{"code": "HK 01", "name": "Penyusunan Peraturan Perundang-Undangan", "items": [{"code": "01.01", "name": "Penyusunan Rencana Pembentukan Peraturan Perundang-undangan"}, {"code": "01.02", "name": "Instrumen Hukum yang Bersifat Nasional"}, {"code": "01.03", "name": "Instrumen Hukum yang Bersifat Internal"}]}, {"code": "HK 02", "name": "Layanan Advokasi Hukum", "items": [{"code": "02.01", "name": "Advokasi Hukum Litigasi"}, {"code": "02.02", "name": "Advokasi Hukum Nonlitigasi"}, {"code": "02.03", "name": "Pengaduan Hukum"}, {"code": "02.04", "name": "Bantuan Hukum"}, {"code": "02.05", "name": "Layanan Aspirasi dan Pengaduan Online Rakyat"}, {"code": "02.06", "name": "Sistem Informasi Pelayanan Publik"}, {"code": "02.07", "name": "Telaah Hukum"}]}, {"code": "HK 03", "name": "Sosialisasi/Penyuluhan dan Pembinaan Hukum", "items": []}]}, {"letter": "H", "code": "UM", "name": "UMUM", "section": "Fasilitatif", "subs": [{"code": "UM 01", "name": "Kearsipan", "items": [{"code": "01.01", "name": "Penciptaan Arsip"}, {"code": "01.02", "name": "Layanan Penggunaan Arsip"}, {"code": "01.03", "name": "Pemberkasan Arsip"}, {"code": "01.04", "name": "Penataan Arsip"}, {"code": "01.05", "name": "Pemeliharaan dan Perawatan Arsip Inaktif"}, {"code": "01.06", "name": "Alih Media Arsip"}, {"code": "01.07", "name": "Program Arsip Vital dan Terjaga"}, {"code": "01.08", "name": "Unggah Informasi Kearsipan pada Sistem Informasi Kearsipan Nasional"}, {"code": "01.09", "name": "Pemindahan Arsip"}, {"code": "01.10", "name": "Pemusnahan Arsip"}, {"code": "01.11", "name": "Penyerahan Arsip"}, {"code": "01.12", "name": "Pembinaan Kearsipan"}, {"code": "01.13", "name": "Pengawasan Kearsipan"}, {"code": "01.14", "name": "Monitoring dan Evaluasi"}]}, {"code": "UM 02", "name": "Kerumahtanggaan", "items": [{"code": "02.01", "name": "Administrasi Penggunaan Ruang dan Peralatan Kantor"}, {"code": "02.02", "name": "Administrasi Peminjaman, Penggunaan, dan Penghunian Rumah Negara"}, {"code": "02.03", "name": "Administrasi Peminjaman, Penggunaan, dan Pemeliharaan Kendaraan Dinas"}, {"code": "02.04", "name": "Administrasi Peminjaman, Penggunaan dan Pemeliharaan Barang Elektronik serta Mesin"}, {"code": "02.05", "name": "Administrasi Pemeliharaan Gedung dan Bangunan serta Area Kantor"}, {"code": "02.06", "name": "Administrasi Pemeliharaan Alat Kesehatan"}, {"code": "02.07", "name": "Administrasi Perjalanan Dinas"}, {"code": "02.08", "name": "Administrasi Penghematan Energi dan Air"}]}, {"code": "UM 03", "name": "Keprotokolan", "items": [{"code": "03.01", "name": "Penyelenggaraan Upacara Nasional"}, {"code": "03.02", "name": "Pelayanan Tamu, Acara Kedinasan, Jamuan, dan Ramah Tamah"}, {"code": "03.03", "name": "Daftar Nama Pejabat dan Alamat"}]}, {"code": "UM 04", "name": "Pengamanan", "items": [{"code": "04.01", "name": "Pengamanan Personil"}, {"code": "04.02", "name": "Pengamanan Lingkungan, Fisik, dan Instalasi"}, {"code": "04.03", "name": "Pengamanan Dokumen dan Informasi Rahasia"}, {"code": "04.04", "name": "Laporan Keamanan"}, {"code": "04.05", "name": "Laporan Kejadian"}, {"code": "04.06", "name": "Permintaan dan Bantuan Pengamanan"}]}, {"code": "UM 05", "name": "Pembinaan Sikap Mental dan Layanan Kesehatan", "items": [{"code": "05.01", "name": "Layanan Keagamaan"}, {"code": "05.02", "name": "Layanan Kesehatan Jasmani"}, {"code": "05.03", "name": "Pelayanan Kesehatan"}]}, {"code": "UM 06", "name": "Kepustakaan", "items": [{"code": "06.01", "name": "Akusisi"}, {"code": "06.02", "name": "Pegolahan Bahan Pustaka"}, {"code": "06.03", "name": "Pangkalan Data Koleksi Perpustakaan"}, {"code": "06.04", "name": "Layanan Perpustakaan"}, {"code": "06.05", "name": "Preservasi Bahan Pustaka"}, {"code": "06.06", "name": "Pengembangan Perpustakaan"}, {"code": "06.07", "name": "Pendidikan dan Pelatihan Perpustakaan"}, {"code": "06.08", "name": "Tenaga Perpustakaan"}]}]}, {"letter": "I", "code": "PW", "name": "PENGAWASAN", "section": "Fasilitatif", "subs": [{"code": "PW 01", "name": "Perencanaan", "items": [{"code": "01.01", "name": "Kebijakan Pengawasan"}, {"code": "01.02", "name": "Program Kerja Pengawasan Tahunan"}, {"code": "01.03", "name": "Program Kerja Administrasi Umum"}, {"code": "01.04", "name": "Rapat Koordinasi Pengawasan"}, {"code": "01.05", "name": "Ikhtisar Hasil Pengawasan"}]}, {"code": "PW 02", "name": "Pelaksanaan pengawasan", "items": [{"code": "02.01", "name": "Audit Kinerja dan Informasi, Reviu, dan Evaluasi"}, {"code": "02.02", "name": "Audit Tujuan Tertentu/Khusus"}, {"code": "02.03", "name": "Pemantauan/Monitoring"}, {"code": "02.04", "name": "Pengawasan Lainnya, Pendampingan, Sosialisasi, dan Perjanjian Kerja Sama"}]}, {"code": "PW 03", "name": "Pelaporan", "items": [{"code": "03.01", "name": "Laporan Hasil Audit Kinerja, Informasi Data Pendukung Pemeriksaan Dalam Negeri dan Luar"}, {"code": "03.02", "name": "Laporan Hasil Audit Tujuan Tertentu (audit khusus)"}, {"code": "03.03", "name": "Pelaporan Pemantauan/Monitoring Badan pemeriksan keuangan Republik Indonesia, Badan"}, {"code": "03.04", "name": "Pelaporan Pengawasan Lainnya, Pendampingan, Sosialisasi, dan Perjanjian Kerja Sama"}, {"code": "03.05", "name": "Pelaporan Inspektorat Jenderal"}]}, {"code": "PW 04", "name": "Tindak Lanjut", "items": [{"code": "04.01", "name": "Tindak Lanjut Hasil Audit Kinerja"}, {"code": "04.02", "name": "Tindak Lanjut Hasil Audit Khusus"}, {"code": "04.03", "name": "Tindak Lanjut Badan Pengawasan Keuangan dan Pembangunan Republik Indonesia, Badan Pemeriksa"}]}, {"code": "PW 05", "name": "Reviu", "items": []}, {"code": "PW 06", "name": "Pengaduan", "items": [{"code": "06.01", "name": "Whistle Blowing System"}, {"code": "06.02", "name": "Gratifikasi"}, {"code": "06.03", "name": "Pengaduan Tertulis (sms gateway, po box, dan surat elektronik)"}, {"code": "06.04", "name": "Pengaduan melalui Aplikasi dan Layanan Aspirasi dan Pengaduan Online Rakyat"}, {"code": "06.05", "name": "Pengaduan Ombusman"}]}, {"code": "PW 07", "name": "Atensi dan Telaahan Disiplin", "items": [{"code": "07.01", "name": "Tanggapan/Telaahan Hukuman Disiplin yang Tidak Ditindaklanjuti"}, {"code": "07.02", "name": "Tanggapan/Telaahan Hukuman Disiplin yang Ditindaklanjuti"}, {"code": "07.03", "name": "Daftar Nama Pegawai Kementerian yang Dikenakan Sanksi Hukuman Disiplin/Kartu Cela"}]}]}, {"letter": "J", "code": "TI", "name": "TEKNOLOGI DAN INFORMASI", "section": "Fasilitatif", "subs": [{"code": "TI 01", "name": "Perencanaan Teknologi Informasi", "items": [{"code": "01.01", "name": "Rencana Induk Teknologi Informasi"}, {"code": "01.02", "name": "Penyusunan Program"}, {"code": "01.03", "name": "Pengembangan Aplikasi"}, {"code": "01.04", "name": "Pengembangan Database, Situs Internet, dan Surat Elektronik"}]}, {"code": "TI 02", "name": "Pengamanan Data", "items": [{"code": "02.01", "name": "Kuesioner, Data Pendukung, dan Analisis"}]}, {"code": "TI 03", "name": "Pengamanan Jaringan", "items": []}, {"code": "TI 04", "name": "Standarisasi", "items": [{"code": "04.01", "name": "Pedoman Standarisasi Teknologi dan Informasi penyusunan pedoman standarisasi teknologi dan"}, {"code": "04.02", "name": "Implementasi Aplikasi"}, {"code": "04.03", "name": "Implementasi Situs Internet, Portal Internet, dan Surat Elektronik"}, {"code": "04.04", "name": "Uji Coba Infrastruktur"}]}, {"code": "TI 05", "name": "Pengelolaan Sistem Teknologi Informasi", "items": [{"code": "05.01", "name": "Pengelolaan Jaringan"}, {"code": "05.02", "name": "Pengelolaan Jaringan Sistem Informasi"}, {"code": "05.03", "name": "Pengelolaan Database"}, {"code": "05.04", "name": "Pengelolaan Situs Internet, Portal Internet, dan Surat Elektronik"}, {"code": "05.05", "name": "Pengelolaan Aplikasi"}, {"code": "05.06", "name": "Pengelolaan Alat Pendukung"}]}, {"code": "TI 06", "name": "Layanan Sistem Teknologi dan Informasi", "items": [{"code": "06.01", "name": "Naskah Layanan Keluhan Layanan Pengadaan secara Elektronik"}, {"code": "06.02", "name": "Tindak Lanjut Keluhan"}, {"code": "06.03", "name": "Monitoring/Pemantauan Layanan Keluhan Tentang Perangat Lunak/Perangkat Keras"}, {"code": "06.04", "name": "Evaluasi Teknologi Informasi"}]}, {"code": "TI 07", "name": "Informasi dan Komunikasi Publik", "items": [{"code": "07.01", "name": "Media Massa (cetak, elektronik, dan media sosial)"}, {"code": "07.02", "name": "Sosialisasi dan Diseminasi"}, {"code": "07.03", "name": "Pengelolaan Pejabat Pengelola Informasi dan Dokumentasi"}, {"code": "07.04", "name": "Badan Koordinasi Hubungan Masyarakat"}, {"code": "07.05", "name": "Peliputan"}, {"code": "07.06", "name": "Konferensi Pers"}, {"code": "07.07", "name": "Siaran Pers"}]}, {"code": "TI 08", "name": "Dokumentasi/Liputan Kegiatan Kedinasan", "items": [{"code": "08.01", "name": "Dokumentasi/Liputan Kegiatan Kedinasan Menteri/wakil Menteri dalam Berbagai Media"}, {"code": "08.02", "name": "Dokumentasi/Liputan Kegiatan Kedinasan Pejabat Tinggi Madya ke bawah dalam Berbagai Media"}, {"code": "08.03", "name": "Rekapitulasi Pemberitaan"}]}]}, {"letter": "A", "code": "PK", "name": "PEMASYARAKATAN", "section": "Substantif", "subs": [{"code": "PK 01", "name": "Perumusan Kebijakan dan Standardisasi Pemasyarakatan", "items": []}, {"code": "PK 02", "name": "Pelayanan Pemasyarakatan", "items": [{"code": "02.01", "name": "Registrasi Tahanan dan Anak"}, {"code": "02.02", "name": "Registrasi Narapidana dan Anak Binaan"}, {"code": "02.03", "name": "Registrasi Klien Pemasyarakatan"}, {"code": "02.04", "name": "Registrasi Titipan"}, {"code": "02.05", "name": "Administrasi Pelayanan Tahanan di luar Rumah Tahanan"}, {"code": "02.06", "name": "Peminjaman/Bon Narapidana dan Anak Binaan"}]}, {"code": "PK 03", "name": "Program Asesmen Dan Klasifikasi", "items": [{"code": "03.01", "name": "Admisi Orientasi"}, {"code": "03.02", "name": "Asesmen dan Klasifikasi"}]}, {"code": "PK 04", "name": "Mutasi", "items": [{"code": "04.01", "name": "Mutasi Tahanan dan Anak"}, {"code": "04.02", "name": "Mutasi Narapidana dan Anak Binaan"}, {"code": "04.03", "name": "Mutasi Klien Pemasyarakatan"}]}, {"code": "PK 05", "name": "Bimbingan Kemasyarakatan Dan Pengentasan Anak", "items": [{"code": "05.01", "name": "Layanan Kepribadian"}, {"code": "05.02", "name": "Layanan Kemandirian"}, {"code": "05.03", "name": "Layanan Pelindungan Hukum Tahanan dan Anak"}, {"code": "05.04", "name": "Pengeluaran Tahanan dan Anak"}, {"code": "05.05", "name": "Pertimbangan Pemasyarakatan Pelayanan Tahanan dan Anak"}]}, {"code": "PK 06", "name": "Pembinaan Narapidana Dan Anak Binaan", "items": [{"code": "06.01", "name": "Pembinaan Kepribadian"}, {"code": "06.02", "name": "Pembinaan Kemandirian"}, {"code": "06.03", "name": "Asimilasi dan Integrasi Narapidana dan Anak Binaan"}, {"code": "06.04", "name": "Pengeluaran Narapidana dan Anak Binaan"}, {"code": "06.05", "name": "Pertimbangan Pemasyarakatan Pembinaan Narapidana dan Anak Binaan"}]}, {"code": "PK 07", "name": "Pembimbingan Kemasyarakatan", "items": [{"code": "07.01", "name": "Penelitian Kemasyarakatan"}, {"code": "07.02", "name": "Pendampingan Klien Pemasyarakatan dan Upaya Keadilan Restoratif Pemasyarakatan"}, {"code": "07.03", "name": "Pembimbingan Klien Pemasyarakatan"}, {"code": "07.04", "name": "Pengawasan Klien Pemasyarakatan"}, {"code": "07.05", "name": "Pertimbangan Pemasyarakatan Pembimbingan Klien Pemasyarakatan"}]}, {"code": "PK 08", "name": "Perawatan Kesehatan Dan Rehabilitasi", "items": [{"code": "08.01", "name": "Perawatan Kesehatan Dasar"}, {"code": "08.02", "name": "Perawatan Kesehatan Lanjutan"}, {"code": "08.03", "name": "Perawatan Kesehatan Khusus"}, {"code": "08.04", "name": "Kebutuhan Dasar dan Kesehatan Lingkungan"}]}, {"code": "PK 09", "name": "Pengamanan dan Intelijen", "items": [{"code": "09.01", "name": "Intelijen Pemasyarakatan"}, {"code": "09.02", "name": "Pencegahan Gangguan Keamanan dan Pemeliharaan Keamanan"}, {"code": "09.03", "name": "Penindakan dan Pemulihan"}]}, {"code": "PK 10", "name": "Kepatuhan Internal", "items": [{"code": "10.01", "name": "Pencegahan dan Pengendalian"}, {"code": "10.02", "name": "Fasilitasi Advokasi dan Investigasi Internal"}]}, {"code": "PK 11", "name": "Pengelolaan Data Dan Informasi Pemasyarakatan", "items": [{"code": "11.01", "name": "Pengelolaan Data Dan Informasi"}, {"code": "11.02", "name": "Pengelolaan Data dan Informasi Narapidana Tindak Pidana yang Mengancam Keamanan Negara,"}]}]}, {"letter": "B", "code": "GR", "name": "KEIMIGRASIAN", "section": "Substantif", "subs": [{"code": "GR 01", "name": "Perumusan Kebijakan Dan Standardisasi Keimigrasian", "items": []}, {"code": "GR 02", "name": "Visa dan Dokumen Perjalanan", "items": [{"code": "02.01", "name": "Dokumen Perjalanan Republik Indonesia"}, {"code": "02.02", "name": "Buku Paspor Habis Masa Berlaku, Gagal Cetak, dan Tidak Diambil"}, {"code": "02.03", "name": "Surat Pejalanan Laksana Paspor Warga Negara Asing"}, {"code": "02.04", "name": "Fasilitas Keimigrasian antara lain Asia Pacific Economic Corporation Business Travel Card Dan"}, {"code": "02.05", "name": "Persetujuan Visa"}, {"code": "02.06", "name": "Bebas Visa Kunjungan"}, {"code": "02.07", "name": "Rekomendasi untuk Mendapatkan Work and Holiday Visa"}, {"code": "02.08", "name": "Pengelolaan Dokumen Blangko Dokumen Perjalanan Republik Indonesia, Visa, dan Permohonan"}]}, {"code": "GR 03", "name": "Izin Tinggal Dan Status Keimigrasian", "items": [{"code": "03.01", "name": "Izin Tinggal Kunjungan"}, {"code": "03.02", "name": "Izin Tinggal Terbatas"}, {"code": "03.03", "name": "Izin Tinggal Tetap"}, {"code": "03.04", "name": "Izin Tinggal Peralihan"}, {"code": "03.05", "name": "Alih Status (konversi) Izin Tinggal termasuk Penolakannya"}, {"code": "03.06", "name": "Pengajuan Permohonan Keterangan Keimigrasian: Surat Keterangan Keimigrasian (SKIM)"}, {"code": "03.07", "name": "Pengambilan Data Biometrik"}, {"code": "03.08", "name": "Penelaahan Status Keimigrasian"}, {"code": "03.09", "name": "Pengelolaan Dokumen Izin Tinggal Keimigrasian"}, {"code": "03.10", "name": "Golden Visa"}, {"code": "03.11", "name": "Diaspora"}, {"code": "03.12", "name": "Permohonan Exit Permit Only"}, {"code": "03.13", "name": "Permohonan Izin Masuk Kembali"}, {"code": "03.14", "name": "Anak Berkewarganegaraan Ganda"}]}, {"code": "GR 04", "name": "Pengawasan dan Penindakan Keimigrasian", "items": [{"code": "04.01", "name": "Penyelidikan"}, {"code": "04.02", "name": "Penyidikan Keimigrasian"}, {"code": "04.03", "name": "Pencegahan"}, {"code": "04.04", "name": "Pencegahan Seseorang yang Memiliki Kasus Berdampak Nasional dan Internasional (tokoh dan"}, {"code": "04.05", "name": "Penangkalan"}, {"code": "04.06", "name": "Penangkalan Seseorang yang Memiliki Kasus Berdampak Nasional dan Internasional"}, {"code": "04.07", "name": "Imigran Ilegal"}, {"code": "04.08", "name": "Pencabutan, Pembatalan, Penahanan Dokumen Perjalanan, dan Dokumen Keimigrasian termasuk"}, {"code": "04.09", "name": "Pengawasan terhadap Warga Negara Indonesia"}, {"code": "04.10", "name": "Pengawasan terhadap Warga Negara Asing"}, {"code": "04.11", "name": "Penanganan terhadap Pengungsi dari Luar Negeri"}, {"code": "04.12", "name": "Tindakan Administratif Keimigrasian"}, {"code": "04.13", "name": "Daftar Pencarian Orang"}, {"code": "04.14", "name": "Administrasi Pedentensian"}]}, {"code": "GR 05", "name": "Intelijen Keimigrasian", "items": [{"code": "05.01", "name": "Penyelidikan dan Operasi Intelijen Keimigrasian"}, {"code": "05.02", "name": "Pengamanan Keimigrasian"}, {"code": "05.03", "name": "Laporan Hasil Kerja Sama Intelijen Keimigrasian"}, {"code": "05.04", "name": "Produk Intelijen Keimigrasian"}]}, {"code": "GR 06", "name": "Kerja Sama Keimigrasian Dan Bina Perwakilan", "items": [{"code": "06.01", "name": "Kerja Sama Antar Lembaga (dalam negeri)"}, {"code": "06.02", "name": "Kerja Sama Antar Negara"}, {"code": "06.03", "name": "Kerja Sama dengan Organisasi Internasional"}, {"code": "06.04", "name": "Pembinaan Perwakilan Republik Indonesia di Luar Negeri"}]}, {"code": "GR 07", "name": "Teknologi Informasi Keimigrasian", "items": [{"code": "07.01", "name": "Lintas Informasi Internal termasuk Tukar Menukar Informasi dan Pelaporan Kegiatan Keimigrasian"}, {"code": "07.02", "name": "Lintas Informasi Eksternal termasuk Pertukaran Informasi dengan Institusi Di Luar Imigrasi"}, {"code": "07.03", "name": "Data Keimigrasian"}, {"code": "07.04", "name": "Permohonan Data Keimigrasian"}, {"code": "07.05", "name": "Data Permohonan Ditolak Sistem"}]}, {"code": "GR 08", "name": "Kepatuhan Internal", "items": [{"code": "08.01", "name": "Pencegahan"}, {"code": "08.02", "name": "Pengendalian"}, {"code": "08.03", "name": "Advokasi"}, {"code": "08.04", "name": "Investigasi"}, {"code": "08.05", "name": "Tindak Lanjut Atas Pemeriksaan Inspektorat Jenderal"}, {"code": "08.06", "name": "Monitoring Dan Evaluasi"}]}, {"code": "GR 09", "name": "Tempat Pemeriksaan Imigrasi", "items": [{"code": "09.01", "name": "Produk Tempat Pemeriksa Keimigrasian"}, {"code": "09.02", "name": "Monitoring dan Supervisi Tempat Pemeriksaan Imigrasi"}, {"code": "09.03", "name": "Pembinaan Tempat Pemeriksaan Imigrasi"}, {"code": "09.04", "name": "Pengelolaan Tempat Pemeriksaan Imigrasi"}, {"code": "09.05", "name": "Pemeriksaan Imigrasi Laut"}, {"code": "09.06", "name": "Pemeriksaan Imigrasi Udara"}, {"code": "09.07", "name": "Pemeriksaan Imigrasi Darat"}, {"code": "09.08", "name": "Tanda Masuk dan Tanda Keluar"}]}]}, {"letter": "C", "code": "SM", "name": "SUMBER DAYA MANUSIA IMIGRASI DAN PEMASYARAKATAN", "section": "Substantif", "subs": [{"code": "SM 01", "name": "Standar dan Program Pengembangan Kompetensi", "items": [{"code": "01.01", "name": "Standar Kompetensi"}, {"code": "01.02", "name": "Program Pelatihan"}]}, {"code": "SM 02", "name": "Pengembangan Kompetensi", "items": [{"code": "02.01", "name": "Perencanaan Program Pengembangan Kompetensi"}, {"code": "02.02", "name": "Penyelenggaraan Program Pengembangan Kompetensi (pendidikan dan pelatihan, bimbingan"}, {"code": "02.03", "name": "Evaluasi dan Pelaporan Program Pengembangan Kompetensi"}, {"code": "02.04", "name": "Penjaminan Mutu Program Pengembangan Kompetensi (akreditasi, sertifikasi)"}, {"code": "02.05", "name": "Pangkalan Data Peserta Pengembangan Kompetensi"}]}, {"code": "SM 03", "name": "Penilaian Kompetensi", "items": [{"code": "03.01", "name": "Perencanaan Program Penilaian Kompetensi"}, {"code": "03.02", "name": "Pelaksanaan Program Penilaian Kompetensi"}, {"code": "03.03", "name": "Evaluasi dan Pelaporan Program Penilaian Kompetensi"}, {"code": "03.04", "name": "Penjaminan Mutu Program Penilaian Kompetensi"}, {"code": "03.05", "name": "Pangkalan Data Penilaian Kompetensi"}]}]}, {"letter": "D", "code": "PS", "name": "PUSAT STRATEGI KEBIJAKAN", "section": "Substantif", "subs": [{"code": "PS 01", "name": "Kajian Kebijakan", "items": [{"code": "01.01", "name": "Agenda Setting"}, {"code": "01.02", "name": "Formulasi Kebijakan"}, {"code": "01.03", "name": "Implementasi Kebijakan"}, {"code": "01.04", "name": "Evaluasi Kebijakan"}]}, {"code": "PS 02", "name": "Survei Kepuasan Masyarakat", "items": [{"code": "02.01", "name": "Penggalian Data Survei"}, {"code": "02.02", "name": "Pelaporan dan Evaluasi"}]}]}];
+
+const groupSelect = document.getElementById('groupSelect');
+const subSelect = document.getElementById('subSelect');
+const itemSelect = document.getElementById('itemSelect');
+const itemField = document.getElementById('itemField');
+const FIXED_PREFIX = 'WP.15.PAS.32';
+const prefixInput = document.getElementById('prefixInput');
+const perihalInput = document.getElementById('perihalInput');
+const previewNumber = document.getElementById('previewNumber');
+const takeNumberBtn = document.getElementById('takeNumberBtn');
+const successToast = document.getElementById('successToast');
+const toastText = document.getElementById('toastText');
+const settingsToggle = document.getElementById('settingsToggle');
+const settingsPanel = document.getElementById('settingsPanel');
+const manualCounter = document.getElementById('manualCounter');
+const saveCounterBtn = document.getElementById('saveCounterBtn');
+const historyTableWrap = document.getElementById('historyTableWrap');
+const historyCount = document.getElementById('historyCount');
+const searchInput = document.getElementById('searchInput');
+const exportBtn = document.getElementById('exportBtn');
+const refreshBtn = document.getElementById('refreshBtn');
+const tanggalInput = document.getElementById('tanggalInput');
+const previewDate = document.getElementById('previewDate');
+
+const pdfClassPreview = document.getElementById('pdfClassPreview');
+const pdfFileInput = document.getElementById('pdfFileInput');
+const pdfPreviewWrap = document.getElementById('pdfPreviewWrap');
+const placeNumberBtn = document.getElementById('placeNumberBtn');
+const placeDateBtn = document.getElementById('placeDateBtn');
+const placeStatus = document.getElementById('placeStatus');
+const pdfCanvas = document.getElementById('pdfCanvas');
+const pdfMarkerNumber = document.getElementById('pdfMarkerNumber');
+const pdfMarkerDate = document.getElementById('pdfMarkerDate');
+const pdfFontSize = document.getElementById('pdfFontSize');
+const pdfTakeNumberBtn = document.getElementById('pdfTakeNumberBtn');
+const pdfToast = document.getElementById('pdfToast');
+const pdfToastText = document.getElementById('pdfToastText');
+const pendingNote = document.getElementById('pendingNote');
+
+if(window.pdfjsLib){
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+}
+
+let allHistory = [];
+let pdfBytes = null;
+let placingMode = null;
+let numberPos = null;
+let datePos = null;
+let pdfPageWidthPt = 0;
+let pdfPageHeightPt = 0;
+let pendingTakenEntry = null;
+
+// Blok "pratinjau nomor" tidak boleh disalin manual (mencegah nomor
+// dipakai sebelum resmi diambil lewat tombol). Hanya nomor yang sudah
+// resmi diambil (via takeNumber) yang boleh dipakai/disalin.
+previewNumber.addEventListener('copy', e => e.preventDefault());
+previewNumber.addEventListener('contextmenu', e => e.preventDefault());
+
+function updatePendingNote(){
+  if(!pendingNote) return;
+  if(pendingTakenEntry){
+    pendingNote.style.display = 'block';
+    pendingNote.textContent = '\u2713 Nomor ' + pendingTakenEntry.fullNumber + ' sudah diambil & menunggu ditempel ke PDF di bawah ini.';
+  } else {
+    pendingNote.style.display = 'none';
+    pendingNote.textContent = '';
+  }
+}
+
+// ============================================================
+// KONFIGURASI FIREBASE
+// Tempel object firebaseConfig dari Firebase Console Anda di sini
+// (Project settings > Your apps > SDK setup and configuration).
+// Nilai contoh di bawah ini hanya placeholder dan TIDAK akan
+// terhubung ke mana pun sampai Anda menggantinya dengan milik Anda.
+// ============================================================
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyDW0ZhyPFP8eJIW1JssxAJIDBC2BWDHFQY",
+  authDomain: "penomoran-surat-363cd.firebaseapp.com",
+  databaseURL: "https://penomoran-surat-363cd-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "penomoran-surat-363cd",
+  storageBucket: "penomoran-surat-363cd.firebasestorage.app",
+  messagingSenderId: "627819868360",
+  appId: "1:627819868360:web:58ac5f7383edc6118d35fd"
+};
+const firebaseConfigured = FIREBASE_CONFIG.apiKey && FIREBASE_CONFIG.apiKey.indexOf('GANTI') === -1 && FIREBASE_CONFIG.databaseURL && FIREBASE_CONFIG.databaseURL.indexOf('GANTI') === -1;
+
+// Storage abstraction, urutan prioritas:
+// 1. window.storage -- otomatis tersedia kalau file ini dibuka sebagai
+//    Artifact di chat Claude; datanya tersimpan bersama/shared di server Anthropic.
+// 2. Firebase Realtime Database -- kalau FIREBASE_CONFIG di atas sudah diisi,
+//    datanya tersimpan bersama/shared secara real-time untuk siapa pun yang
+//    membuka file HTML ini (di komputer/browser mana pun), selama internet aktif.
+// 3. localStorage browser -- cadangan terakhir kalau dua opsi di atas tidak
+//    tersedia; datanya HANYA tersimpan di browser/komputer itu saja, tidak
+//    dibagikan ke pengguna lain.
+const usingArtifactStorage = !!(window.storage && typeof window.storage.get === 'function');
+const usingLocalFallback = !usingArtifactStorage && !firebaseConfigured;
+const usingFirebase = !usingArtifactStorage && firebaseConfigured;
+
+const LS_PREFIX = 'penomoran-surat::';
+const localFallbackStorage = {
+  async get(key){
+    const raw = localStorage.getItem(LS_PREFIX + key);
+    return raw !== null ? { key, value: raw } : null;
+  },
+  async set(key, value){
+    localStorage.setItem(LS_PREFIX + key, value);
+    return { key, value };
+  },
+  async delete(key){
+    localStorage.removeItem(LS_PREFIX + key);
+    return { key, deleted: true };
+  },
+  async list(prefix){
+    const keys = [];
+    for(let i = 0; i < localStorage.length; i++){
+      const k = localStorage.key(i);
+      if(k && k.indexOf(LS_PREFIX) === 0){
+        const bare = k.slice(LS_PREFIX.length);
+        if(!prefix || bare.indexOf(prefix) === 0) keys.push(bare);
+      }
+    }
+    return { keys };
+  }
+};
+
+function fbEncodeKey(key){
+  // Firebase Realtime Database key tidak boleh mengandung '.', '#', '$', '[', ']', '/'
+  return encodeURIComponent(key).replace(/\./g, '%2E');
+}
+let firebaseDb = null;
+let firebaseStorage = null;
+if(usingFirebase){
+  try{
+    firebase.initializeApp(FIREBASE_CONFIG);
+    firebaseDb = firebase.database();
+    firebaseStorage = {
+      async get(key){
+        const snap = await firebaseDb.ref('data/' + fbEncodeKey(key)).once('value');
+        const v = snap.val();
+        return (v !== null && v !== undefined) ? { key, value: v } : null;
+      },
+      async set(key, value){
+        await firebaseDb.ref('data/' + fbEncodeKey(key)).set(value);
+        return { key, value };
+      },
+      async delete(key){
+        await firebaseDb.ref('data/' + fbEncodeKey(key)).remove();
+        return { key, deleted: true };
+      },
+      async list(prefix){
+        const snap = await firebaseDb.ref('data').once('value');
+        const val = snap.val() || {};
+        const keys = Object.keys(val)
+          .map(fbk => decodeURIComponent(fbk))
+          .filter(k => !prefix || k.indexOf(prefix) === 0);
+        return { keys };
+      }
+    };
+  } catch(err){
+    console.error('Gagal inisialisasi Firebase, kembali ke localStorage:', err);
+    firebaseStorage = null;
+  }
+}
+const storage = usingArtifactStorage ? window.storage : (firebaseStorage || localFallbackStorage);
+const effectiveMode = usingArtifactStorage ? 'artifact' : (firebaseStorage ? 'firebase' : 'local');
+
+function populateGroups(){
+  const fasil = CLASSIFICATION.filter(g => g.section === 'Fasilitatif');
+  const subst = CLASSIFICATION.filter(g => g.section === 'Substantif');
+  groupSelect.innerHTML = '<option value="">Pilih kategori&hellip;</option>';
+  function addOptgroup(label, items){
+    if(!items.length) return;
+    const og = document.createElement('optgroup');
+    og.label = label;
+    items.forEach(g => {
+      const opt = document.createElement('option');
+      opt.value = g.code;
+      opt.textContent = g.code + ' \u2014 ' + titleCase(g.name);
+      og.appendChild(opt);
+    });
+    groupSelect.appendChild(og);
+  }
+  addOptgroup('Arsip Fasilitatif', fasil);
+  addOptgroup('Arsip Substantif', subst);
+}
+
+function titleCase(s){
+  return s.toLowerCase().replace(/(^|\s|\/|\()([a-z])/g, (m,p1,p2)=>p1+p2.toUpperCase());
+}
+
+function getGroup(code){ return CLASSIFICATION.find(g => g.code === code); }
+
+function populateSubs(){
+  const g = getGroup(groupSelect.value);
+  subSelect.innerHTML = '';
+  itemSelect.innerHTML = '';
+  itemField.style.display = 'none';
+  if(!g){
+    subSelect.disabled = true;
+    subSelect.innerHTML = '<option value="">&mdash;</option>';
+    updatePreview();
+    return;
+  }
+  subSelect.disabled = false;
+  subSelect.innerHTML = '<option value="">Pilih sub kategori&hellip;</option>';
+  g.subs.forEach((s, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = s.code + ' \u2014 ' + s.name;
+    subSelect.appendChild(opt);
+  });
+  updatePreview();
+}
+
+function populateItems(){
+  const g = getGroup(groupSelect.value);
+  itemSelect.innerHTML = '';
+  if(!g || subSelect.value === ''){
+    itemField.style.display = 'none';
+    updatePreview();
+    return;
+  }
+  const s = g.subs[parseInt(subSelect.value, 10)];
+  if(!s || !s.items.length){
+    itemField.style.display = 'none';
+    updatePreview();
+    return;
+  }
+  itemField.style.display = 'block';
+  itemSelect.disabled = false;
+  itemSelect.innerHTML = '<option value="">Pilih rincian&hellip;</option>';
+  s.items.forEach((it, idx) => {
+    const opt = document.createElement('option');
+    opt.value = idx;
+    opt.textContent = it.code + ' \u2014 ' + it.name;
+    itemSelect.appendChild(opt);
+  });
+  updatePreview();
+}
+
+function currentClassificationCode(){
+  const g = getGroup(groupSelect.value);
+  if(!g || subSelect.value === '') return null;
+  const s = g.subs[parseInt(subSelect.value, 10)];
+  if(!s) return null;
+  const subDigits = s.code.split(' ')[1];
+  if(s.items.length){
+    if(itemSelect.value === '') return null;
+    const it = s.items[parseInt(itemSelect.value, 10)];
+    if(!it) return null;
+    return { code: g.code + '.' + it.code, label: g.name + ' / ' + s.name + ' / ' + it.name };
+  }
+  return { code: g.code + '.' + subDigits, label: g.name + ' / ' + s.name };
+}
+
+function currentPrefix(){
+  return FIXED_PREFIX;
+}
+
+function counterKey(prefix, code){
+  return 'counter::' + prefix + '::' + code;
+}
+
+async function getCounter(prefix, code){
+  try{
+    const res = await storage.get(counterKey(prefix, code));
+    return res ? parseInt(res.value, 10) : 0;
+  } catch(e){
+    return 0;
+  }
+}
+
+function fmtDateLong(isoDate){
+  if(!isoDate) return '';
+  const d = new Date(isoDate + 'T00:00:00');
+  if(isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+}
+
+async function updatePreview(){
+  const cls = currentClassificationCode();
+  const prefix = currentPrefix();
+  if(!cls || !prefix){
+    previewNumber.innerHTML = '<span class="preview-empty">' + (!prefix ? 'Isi kode unit terlebih dahulu&hellip;' : 'Lengkapi kategori di atas&hellip;') + '</span>';
+    previewDate.textContent = '';
+    takeNumberBtn.disabled = true;
+    manualCounter.value = '';
+    updatePdfClassPreview();
+    return;
+  }
+  const last = await getCounter(prefix, cls.code);
+  const next = last + 1;
+  previewNumber.innerHTML = prefix + '-' + cls.code + '-<span class="num-part">' + next + '</span>';
+  previewDate.textContent = tanggalInput.value ? fmtDateLong(tanggalInput.value) : '';
+  takeNumberBtn.disabled = false;
+  manualCounter.value = last;
+  takeNumberBtn.dataset.nextNumber = next;
+  takeNumberBtn.dataset.code = cls.code;
+  takeNumberBtn.dataset.label = cls.label;
+  updatePdfClassPreview();
+}
+
+function updatePdfClassPreview(){
+  if(!pdfClassPreview) return;
+  const cls = currentClassificationCode();
+  const prefix = currentPrefix();
+  if(cls && prefix){
+    pdfClassPreview.textContent = prefix + ' \u2014 ' + cls.code + ' (' + cls.label + ')';
+  } else {
+    pdfClassPreview.textContent = 'Lengkapi kategori pada bagian di atas terlebih dahulu.';
+  }
+  updatePdfTakeBtn();
+}
+
+async function takeNextNumber(){
+  const cls = currentClassificationCode();
+  const prefix = currentPrefix();
+  if(!cls || !prefix) return null;
+  const last = await getCounter(prefix, cls.code);
+  const next = last + 1;
+  const fullNumber = prefix + '-' + cls.code + '-' + next;
+  const now = new Date();
+  const entry = {
+    id: 'h' + now.getTime() + '_' + Math.random().toString(36).slice(2,8),
+    fullNumber: fullNumber,
+    prefix: prefix,
+    code: cls.code,
+    label: cls.label,
+    seq: next,
+    perihal: perihalInput.value.trim(),
+    tanggalSurat: tanggalInput.value || now.toISOString().slice(0,10),
+    date: now.toISOString()
+  };
+  await storage.set(counterKey(prefix, cls.code), String(next));
+  await storage.set('history::' + entry.id, JSON.stringify(entry));
+  return entry;
+}
+
+async function takeNumber(){
+  const cls = currentClassificationCode();
+  const prefix = currentPrefix();
+  if(!cls || !prefix) return;
+  takeNumberBtn.disabled = true;
+  let entry;
+  try{
+    entry = await takeNextNumber();
+  } catch(e){
+    alert('Gagal menyimpan nomor. Coba lagi.');
+    takeNumberBtn.disabled = false;
+    return;
+  }
+  if(!entry){ takeNumberBtn.disabled = false; return; }
+
+  perihalInput.value = '';
+  await updatePreview();
+  await loadHistory();
+
+  const siapTempelPdf = pdfBytes && numberPos;
+  if(siapTempelPdf){
+    // PDF & posisi sudah siap sebelum nomor diambil -> langsung tempel & unduh,
+    // tidak perlu klik dua kali dan tidak perlu menampilkan nomor mentah.
+    toastText.textContent = 'Nomor diambil & langsung ditempel ke PDF yang sudah disiapkan.';
+    successToast.classList.add('show');
+    setTimeout(()=> successToast.classList.remove('show'), 4000);
+    await stampAndDownloadPdf(entry);
+  } else {
+    // Belum ada PDF/posisi yang siap -> simpan sebagai "nomor tertunda"
+    // supaya begitu kartu PDF siap, nomor yang SAMA ini yang dipakai
+    // (bukan mengambil nomor baru lagi).
+    pendingTakenEntry = entry;
+    updatePendingNote();
+    navigator.clipboard && navigator.clipboard.writeText(entry.fullNumber).catch(()=>{});
+    toastText.textContent = 'Nomor berhasil diambil & dicatat (tersalin ke clipboard).';
+    successToast.classList.add('show');
+    setTimeout(()=> successToast.classList.remove('show'), 4000);
+  }
+  takeNumberBtn.disabled = false;
+}
+
+function fmtDate(iso){
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}) + ' ' + d.toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+}
+
+async function loadHistory(){
+  historyTableWrap.innerHTML = '<div class="empty-state">Memuat riwayat&hellip;</div>';
+  try{
+    const list = await storage.list('history::');
+    const keys = (list && list.keys) ? list.keys : [];
+    const entries = [];
+    for(const k of keys){
+      try{
+        const res = await storage.get(k);
+        if(res) entries.push(JSON.parse(res.value));
+      } catch(e){}
+    }
+    entries.sort((a,b) => new Date(b.date) - new Date(a.date));
+    allHistory = entries;
+    renderHistory();
+  } catch(e){
+    historyTableWrap.innerHTML = '<div class="empty-state">Belum ada riwayat, atau gagal memuat.</div>';
+    historyCount.textContent = '0';
+  }
+}
+
+function renderHistory(){
+  const q = (searchInput.value || '').toLowerCase().trim();
+  const filtered = allHistory.filter(e =>
+    !q || e.fullNumber.toLowerCase().includes(q) || (e.perihal||'').toLowerCase().includes(q) || (e.label||'').toLowerCase().includes(q)
+  );
+  historyCount.textContent = allHistory.length;
+  if(!filtered.length){
+    historyTableWrap.innerHTML = '<div class="empty-state">' + (allHistory.length ? 'Tidak ada hasil yang cocok.' : 'Belum ada nomor surat yang diambil.') + '</div>';
+    return;
+  }
+  let rows = '';
+  filtered.forEach(e => {
+    rows += '<tr data-id="' + e.id + '">' +
+      '<td class="num">' + escapeHtml(e.fullNumber) + '</td>' +
+      '<td class="date">' + (e.tanggalSurat ? fmtDateLong(e.tanggalSurat) : '\u2014') + '</td>' +
+      '<td class="date">' + fmtDate(e.date) + '</td>' +
+      '<td>' + escapeHtml(e.perihal || '\u2014') + '</td>' +
+      '<td style="color:var(--ink-soft);font-size:12.5px;">' + escapeHtml(e.label || '') + '</td>' +
+      '<td class="row-actions"><button class="icon-btn" title="Hapus dari riwayat" onclick="deleteEntry(\'' + e.id + '\')">&#10005;</button></td>' +
+      '</tr>';
+  });
+  historyTableWrap.innerHTML =
+    '<table><thead><tr><th>Nomor Surat</th><th>Tanggal Surat</th><th>Diambil pada</th><th>Perihal</th><th>Kategori</th><th></th></tr></thead><tbody>' + rows + '</tbody></table>';
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+async function deleteEntry(id){
+  if(!confirm('Hapus nomor ini dari riwayat? Nomor urut yang sudah dipakai tidak akan otomatis dikembalikan.')) return;
+  try{
+    await storage.delete('history::' + id);
+    await loadHistory();
+  } catch(e){
+    alert('Gagal menghapus.');
+  }
+}
+
+function downloadCSV(){
+  if(!allHistory.length){ alert('Belum ada data untuk diunduh.'); return; }
+  const header = ['Nomor Surat','Tanggal Surat','Diambil pada','Perihal','Kategori'];
+  const rows = allHistory.map(e => [e.fullNumber, e.tanggalSurat ? fmtDateLong(e.tanggalSurat) : '', fmtDate(e.date), e.perihal||'', e.label||'']);
+  const csv = [header, ...rows].map(r => r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',')).join('\n');
+  const blob = new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'riwayat-nomor-surat.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+async function saveManualCounter(){
+  const cls = currentClassificationCode();
+  const prefix = currentPrefix();
+  if(!cls || !prefix) return;
+  const val = parseInt(manualCounter.value, 10);
+  if(isNaN(val) || val < 0){ alert('Masukkan angka yang valid (0 atau lebih).'); return; }
+  try{
+    await storage.set(counterKey(prefix, cls.code), String(val));
+    saveCounterBtn.textContent = 'Tersimpan';
+    setTimeout(()=> saveCounterBtn.textContent = 'Simpan', 1500);
+  } catch(e){}
+  updatePreview();
+}
+
+function updatePdfTakeBtn(){
+  if(!pdfTakeNumberBtn) return;
+  pdfTakeNumberBtn.disabled = !(numberPos && pdfBytes && currentClassificationCode());
+  pdfTakeNumberBtn.textContent = pendingTakenEntry
+    ? 'Tempel Nomor & Unduh PDF'
+    : 'Ambil Nomor & Unduh PDF Terisi';
+}
+
+function pdfPointToCanvasPx(pt){
+  return {
+    left: (pt.x / pdfPageWidthPt) * pdfCanvas.width,
+    top: pdfCanvas.height - (pt.y / pdfPageHeightPt) * pdfCanvas.height
+  };
+}
+
+function showMarker(el, pt, autoLabel){
+  const px = pdfPointToCanvasPx(pt);
+  const rect = pdfCanvas.getBoundingClientRect();
+  const scale = rect.width / pdfCanvas.width;
+  el.style.left = (px.left * scale) + 'px';
+  el.style.top = (px.top * scale) + 'px';
+  el.style.display = 'block';
+  if(autoLabel) el.title = 'Terdeteksi otomatis dari kode di dokumen';
+}
+
+async function scanForPlaceholders(page){
+  const textContent = await page.getTextContent();
+  let foundNumber = null, foundDate = null;
+  textContent.items.forEach(item => {
+    const str = item.str || '';
+    if(!foundNumber && str.includes('{{NOMOR}}')){
+      const h = Math.abs(item.transform[3]) || 11;
+      foundNumber = { x: item.transform[4], y: item.transform[5], w: item.width || 60, h: h, auto: true };
+    }
+    if(!foundDate && str.includes('{{TANGGAL}}')){
+      const h = Math.abs(item.transform[3]) || 11;
+      foundDate = { x: item.transform[4], y: item.transform[5], w: item.width || 60, h: h, auto: true };
+    }
+  });
+  return { foundNumber, foundDate };
+}
+
+async function loadPdfPreview(file){
+  const arrayBuffer = await file.arrayBuffer();
+  pdfBytes = arrayBuffer.slice(0);
+  const loadingTask = pdfjsLib.getDocument({data: arrayBuffer.slice(0)});
+  const pdf = await loadingTask.promise;
+  const page = await pdf.getPage(1);
+  const unscaled = page.getViewport({scale: 1});
+  pdfPageWidthPt = unscaled.width;
+  pdfPageHeightPt = unscaled.height;
+  const viewport = page.getViewport({scale: 1.4});
+  pdfCanvas.width = viewport.width;
+  pdfCanvas.height = viewport.height;
+  const ctx = pdfCanvas.getContext('2d');
+  await page.render({canvasContext: ctx, viewport: viewport}).promise;
+  pdfPreviewWrap.style.display = 'block';
+  numberPos = null;
+  datePos = null;
+  placingMode = null;
+  pdfMarkerNumber.style.display = 'none';
+  pdfMarkerDate.style.display = 'none';
+
+  const { foundNumber, foundDate } = await scanForPlaceholders(page);
+  let msgParts = [];
+  if(foundNumber){
+    numberPos = foundNumber;
+    showMarker(pdfMarkerNumber, foundNumber, true);
+    pdfFontSize.value = Math.round(foundNumber.h);
+    msgParts.push('kode {{NOMOR}} ditemukan otomatis');
+  }
+  if(foundDate){
+    datePos = foundDate;
+    showMarker(pdfMarkerDate, foundDate, true);
+    msgParts.push('kode {{TANGGAL}} ditemukan otomatis');
+  }
+  placeStatus.textContent = msgParts.length
+    ? 'Terdeteksi: ' + msgParts.join(', ') + '. Anda tetap bisa klik tombol di atas untuk menandai/menggeser posisi secara manual.'
+    : 'Tidak ditemukan kode {{NOMOR}}/{{TANGGAL}} pada dokumen. Klik salah satu tombol di atas, lalu klik lokasi yang sesuai pada pratinjau di bawah.';
+  updatePdfTakeBtn();
+}
+
+pdfFileInput.addEventListener('change', async (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  if(file.type !== 'application/pdf'){
+    alert('Berkas harus berformat PDF.');
+    pdfFileInput.value = '';
+    return;
+  }
+  try{
+    await loadPdfPreview(file);
+  } catch(err){
+    console.error(err);
+    alert('Gagal membaca PDF. Pastikan berkasnya tidak rusak atau terkunci.');
+  }
+});
+
+placeNumberBtn.addEventListener('click', () => {
+  placingMode = 'number';
+  placeStatus.textContent = 'Klik pada pratinjau surat untuk menandai posisi NOMOR.';
+});
+placeDateBtn.addEventListener('click', () => {
+  placingMode = 'date';
+  placeStatus.textContent = 'Klik pada pratinjau surat untuk menandai posisi TANGGAL.';
+});
+
+pdfCanvas.addEventListener('click', (e) => {
+  if(!placingMode) return;
+  const rect = pdfCanvas.getBoundingClientRect();
+  const scaleX = pdfCanvas.width / rect.width;
+  const scaleY = pdfCanvas.height / rect.height;
+  const xPx = (e.clientX - rect.left) * scaleX;
+  const yPx = (e.clientY - rect.top) * scaleY;
+  const pdfX = (xPx / pdfCanvas.width) * pdfPageWidthPt;
+  const pdfY = pdfPageHeightPt - (yPx / pdfCanvas.height) * pdfPageHeightPt;
+  const displayLeft = e.clientX - rect.left;
+  const displayTop = e.clientY - rect.top;
+  if(placingMode === 'number'){
+    numberPos = { x: pdfX, y: pdfY, auto: false };
+    pdfMarkerNumber.style.left = displayLeft + 'px';
+    pdfMarkerNumber.style.top = displayTop + 'px';
+    pdfMarkerNumber.style.display = 'block';
+    pdfMarkerNumber.title = '';
+  } else {
+    datePos = { x: pdfX, y: pdfY, auto: false };
+    pdfMarkerDate.style.left = displayLeft + 'px';
+    pdfMarkerDate.style.top = displayTop + 'px';
+    pdfMarkerDate.style.display = 'block';
+    pdfMarkerDate.title = '';
+  }
+  placingMode = null;
+  placeStatus.textContent = 'Posisi tersimpan (manual). Tandai posisi lain jika perlu, atau langsung ambil nomor.';
+  updatePdfTakeBtn();
+});
+
+async function stampAndDownloadPdf(entry){
+  const fontSize = parseFloat(pdfFontSize.value) || 11;
+  try{
+    const { PDFDocument, rgb, StandardFonts } = PDFLib;
+    const pdfDocLib = await PDFDocument.load(pdfBytes);
+    const page = pdfDocLib.getPages()[0];
+    const font = await pdfDocLib.embedFont(StandardFonts.Helvetica);
+
+    function stampAt(pos, text){
+      if(pos.auto){
+        const padX = 2, padY = 2;
+        page.drawRectangle({
+          x: pos.x - padX,
+          y: pos.y - padY,
+          width: (pos.w || (text.length * fontSize * 0.55)) + padX * 2,
+          height: (pos.h || fontSize) + padY * 2,
+          color: rgb(1,1,1)
+        });
+      }
+      page.drawText(text, { x: pos.x, y: pos.y, size: fontSize, font, color: rgb(0,0,0) });
+    }
+
+    stampAt(numberPos, entry.fullNumber);
+    if(datePos){
+      stampAt(datePos, fmtDateLong(entry.tanggalSurat));
+    }
+
+    const outBytes = await pdfDocLib.save();
+    const blob = new Blob([outBytes], {type:'application/pdf'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Surat-' + entry.fullNumber.replace(/[\\/:*?"<>|]/g,'-') + '.pdf';
+    a.click();
+    URL.revokeObjectURL(url);
+
+    pdfToastText.textContent = 'Nomor ' + entry.fullNumber + ' berhasil ditambahkan ke PDF dan diunduh.';
+    pdfToast.classList.add('show');
+    setTimeout(() => pdfToast.classList.remove('show'), 5000);
+
+    pdfFileInput.value = '';
+    pdfPreviewWrap.style.display = 'none';
+    pdfBytes = null;
+    numberPos = null;
+    datePos = null;
+    pendingTakenEntry = null;
+    updatePendingNote();
+    return true;
+  } catch(err){
+    console.error(err);
+    alert('Gagal menempel nomor ke PDF. Nomor tetap tersimpan di riwayat, tapi PDF perlu diproses ulang -- coba upload lagi.');
+    return false;
+  }
+}
+
+async function takeNumberForPdf(){
+  const cls = currentClassificationCode();
+  const prefix = currentPrefix();
+  if(!cls || !prefix || !numberPos || !pdfBytes) return;
+  pdfTakeNumberBtn.disabled = true;
+  const originalLabel = pdfTakeNumberBtn.textContent;
+  pdfTakeNumberBtn.textContent = 'Memproses\u2026';
+  try{
+    let entry = pendingTakenEntry;
+    if(!entry){
+      entry = await takeNextNumber();
+    }
+    if(!entry) return;
+    await stampAndDownloadPdf(entry);
+    await updatePreview();
+    await loadHistory();
+  } catch(err){
+    console.error(err);
+    alert('Gagal memproses PDF. Coba lagi, atau periksa apakah berkas PDF valid.');
+  } finally {
+    pdfTakeNumberBtn.textContent = originalLabel;
+    updatePdfTakeBtn();
+  }
+}
+
+pdfTakeNumberBtn.addEventListener('click', takeNumberForPdf);
+
+groupSelect.addEventListener('change', populateSubs);
+subSelect.addEventListener('change', populateItems);
+itemSelect.addEventListener('change', updatePreview);
+takeNumberBtn.addEventListener('click', takeNumber);
+settingsToggle.addEventListener('click', () => settingsPanel.classList.toggle('show'));
+saveCounterBtn.addEventListener('click', saveManualCounter);
+searchInput.addEventListener('input', renderHistory);
+exportBtn.addEventListener('click', downloadCSV);
+refreshBtn.addEventListener('click', loadHistory);
+tanggalInput.addEventListener('change', updatePreview);
+
+tanggalInput.value = new Date().toISOString().slice(0,10);
+
+(function showStorageModeNote(){
+  const note = document.getElementById('storageModeNote');
+  if(!note) return;
+  if(effectiveMode === 'firebase'){
+    note.style.display = 'block';
+    note.style.color = 'var(--ink-soft)';
+    note.innerHTML = '&#9989; Terhubung ke Firebase &mdash; nomor &amp; riwayat dibagikan secara real-time ke semua pengguna yang membuka berkas ini.';
+  } else if(effectiveMode === 'local'){
+    note.style.display = 'block';
+    note.style.color = 'var(--danger)';
+    note.innerHTML = '&#9888; Mode lokal aktif: nomor &amp; riwayat hanya tersimpan di browser ini (tidak dibagikan ke pengguna lain). Isi FIREBASE_CONFIG di kode, atau buka alat ini sebagai Artifact di chat Claude, untuk penyimpanan bersama.';
+  }
+  // effectiveMode === 'artifact': sudah shared secara default, tidak perlu catatan.
+})();
+
+populateGroups();
+populateSubs();
+updatePreview();
+loadHistory();
+updatePendingNote();
+</script>
+</body>
+</html>
