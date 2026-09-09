@@ -304,12 +304,12 @@
 
   <div class="card" id="stepUploadCard">
     <h2><span class="step-num">1</span>Unggah surat (PDF)</h2>
-    <p class="desc">Unggah surat (PDF) yang bagian nomornya masih kosong. Cara termudah: di template Word/surat Anda, ketik kode <code style="background:#f0f0f0; padding:1px 5px; border-radius:4px; font-family:'IBM Plex Mono',monospace;">{{NOMOR}}</code> di tempat nomor surat berada, lalu ekspor/simpan sebagai PDF. Saat PDF diupload di sini, kode itu akan terdeteksi otomatis dan langsung diganti dengan nomor sebenarnya pada langkah berikutnya. Jika dokumen tidak memakai kode ini, Anda tetap bisa menandai posisinya secara manual dengan klik.</p>
+    <p class="desc">Unggah file (pdf) yang bagian nomornya masih kosong. Pastikan file yang di unggah sudah benar !!!</p>
 
     <div class="field">
       <label for="pdfFileInput">Berkas PDF surat</label>
       <input type="file" id="pdfFileInput" accept="application/pdf">
-      <p class="hint">Berkas hanya diproses di peramban Anda (tidak diunggah ke server mana pun). Hanya halaman pertama yang diisi.</p>
+      <p class="hint">Berkas diproses lokal. Hanya halaman pertama yang diisi.</p>
     </div>
 
     <div id="pdfPreviewWrap" style="display:none;">
